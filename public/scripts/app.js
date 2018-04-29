@@ -1,73 +1,85 @@
 'use strict';
 
-// const app = {
-//   title: 'indecision app',
-//   subtitle: 'strive for katastematic state',
-//   options: ['one', 'two']
-// }
-//
-// const template = (
-//   <div>
-//     <h1>{app.title}</h1>
-//     {app.subtitle && <p>{app.subtitle}</p>}
-//     <p>{app.options.length > 0 ? 'here are your options' : 'no options'}</p>
-//   </div>
-// )
-
-/**
- * how do we set up an e.g. onClick attribute such that it evaluates
- * as a JS expression?
- */
-
-var count = 0;
-
-var addOne = function addOne() {
-  count++;
-  renderCounterApp();
+var app = {
+  title: 'indecision app',
+  subtitle: 'strive for katastematic state',
+  options: []
 };
 
-var minusOne = function minusOne() {
-  count--;
-  renderCounterApp();
+var onFormSubmit = function onFormSubmit(e) {
+  e.preventDefault();
+
+  // `e.target` points to the element that the event started on
+  // `elements` contains all elements alphabetized by name, so
+  // - we can access our input w/`option` (& `value` like JS)
+  var option = e.target.elements.option.value;
+  if (option) {
+    app.options.push(option);
+    e.target.elements.option.value = '';
+    renderApp();
+  }
 };
 
-var reset = function reset() {
-  count = 0;
-  renderCounterApp();
+var removeOptions = function removeOptions() {
+  app.options = [];
+  renderApp();
 };
 
 var appRoot = document.getElementById('app');
 
-/**
- * and to re-render our app when a user clicks on the buttons:
- */
-var renderCounterApp = function renderCounterApp() {
-  var templateTwo = React.createElement(
+var renderApp = function renderApp() {
+  var template = React.createElement(
     'div',
     null,
     React.createElement(
       'h1',
       null,
-      'count: ',
-      count
+      app.title
+    ),
+    app.subtitle && React.createElement(
+      'p',
+      null,
+      app.subtitle
+    ),
+    React.createElement(
+      'p',
+      null,
+      app.options.length > 0 ? 'here are your options' : 'no options'
+    ),
+    React.createElement(
+      'p',
+      null,
+      app.options.length
     ),
     React.createElement(
       'button',
-      { onClick: addOne, className: 'btn' },
-      '+'
+      { onClick: removeOptions },
+      'remove all'
     ),
     React.createElement(
-      'button',
-      { onClick: minusOne, className: 'btn' },
-      '-'
+      'ol',
+      null,
+      app.options.map(function (option) {
+        return React.createElement(
+          'li',
+          { key: app.options.indexOf(option) },
+          option
+        );
+      })
     ),
     React.createElement(
-      'button',
-      { onClick: reset, className: 'btn' },
-      'reset'
+      'form',
+      { onSubmit: onFormSubmit },
+      React.createElement('input', { type: 'text', name: 'option' }),
+      React.createElement(
+        'button',
+        null,
+        'add option'
+      )
     )
   );
-  ReactDOM.render(templateTwo, appRoot);
+
+  ReactDOM.render(template, appRoot);
 };
 
-renderCounterApp();
+renderApp();

@@ -1,54 +1,53 @@
-// const app = {
-//   title: 'indecision app',
-//   subtitle: 'strive for katastematic state',
-//   options: ['one', 'two']
-// }
-//
-// const template = (
-//   <div>
-//     <h1>{app.title}</h1>
-//     {app.subtitle && <p>{app.subtitle}</p>}
-//     <p>{app.options.length > 0 ? 'here are your options' : 'no options'}</p>
-//   </div>
-// )
-
-/**
- * how do we set up an e.g. onClick attribute such that it evaluates
- * as a JS expression?
- */
-
-let count = 0
-
-const addOne = () => {
-  count++
-  renderCounterApp()
+const app = {
+  title: 'indecision app',
+  subtitle: 'strive for katastematic state',
+  options: []
 }
 
-const minusOne = () => {
-  count--
-  renderCounterApp()
+const onFormSubmit = e => {
+  e.preventDefault()
+
+  // `e.target` points to the element that the event started on
+  // `elements` contains all elements alphabetized by name, so
+  // - we can access our input w/`option` (& `value` like JS)
+  const option = e.target.elements.option.value
+  if (option) {
+    app.options.push(option)
+    e.target.elements.option.value = ''
+    renderApp()
+  }
 }
 
-const reset = () => {
-  count = 0
-  renderCounterApp()
+const removeOptions = () => {
+  app.options = []
+  renderApp()
 }
 
 const appRoot = document.getElementById('app')
 
-/**
- * and to re-render our app when a user clicks on the buttons:
- */
-const renderCounterApp = () => {
-  const templateTwo = (
+const renderApp = () => {
+  const template = (
     <div>
-      <h1>count: {count}</h1>
-      <button onClick={addOne} className='btn'>+</button>
-      <button onClick={minusOne} className='btn'>-</button>
-      <button onClick={reset} className='btn'>reset</button>
+      <h1>{app.title}</h1>
+      {app.subtitle && <p>{app.subtitle}</p>}
+      <p>{app.options.length > 0
+        ? 'here are your options'
+        : 'no options'}
+      </p>
+      <p>{app.options.length}</p>
+      <button onClick={removeOptions}>remove all</button>
+      <ol>
+        {app.options.map(
+          option => <li key={app.options.indexOf(option)}>{option}</li>)}
+      </ol>
+      <form onSubmit={onFormSubmit}>
+        <input type='text' name='option' />
+        <button>add option</button>
+      </form>
     </div>
   )
-  ReactDOM.render(templateTwo, appRoot)
+
+  ReactDOM.render(template, appRoot)
 }
 
-renderCounterApp()
+renderApp()
