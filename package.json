@@ -1,0 +1,13 @@
+{
+  "name": "indecision",
+  "version": "1.0.0",
+  "description": "react@16 & react-router-v4 learning",
+  "main": "index.js",
+  "repository": "https://github.com/hectorcoronado/indecision.git",
+  "author": "Hector Coronado",
+  "license": "MIT",
+  "dependencies": {
+    "babel-preset-env": "1.5.2",
+    "babel-preset-react": "6.24.1"
+  }
+}
