@@ -20,13 +20,15 @@ var IndecisionContainer = function (_React$Component) {
   _createClass(IndecisionContainer, [{
     key: 'render',
     value: function render() {
+      var title = 'indecision';
+      var subtitle = 'strive for a katastematic state';
+      var options = ['thing one', 'thing two', 'thing three'];
       return React.createElement(
         'div',
         null,
-        React.createElement(Header, { title: 'test title' }),
-        React.createElement(Header, { title: 'other title' }),
+        React.createElement(Header, { title: title, subtitle: subtitle }),
         React.createElement(Action, null),
-        React.createElement(OptionsContainer, null),
+        React.createElement(OptionsContainer, { options: options }),
         React.createElement(AddOption, null)
       );
     }
@@ -62,19 +64,18 @@ var Header = function (_React$Component2) {
        * - ...as we can see, our custom attributes are available to us
        * - in the form of key/value pairs.
        */
-      console.log(this.props);
       return React.createElement(
         'div',
         null,
         React.createElement(
-          'h5',
+          'h4',
           null,
-          'indecision'
+          this.props.title
         ),
         React.createElement(
           'p',
           null,
-          'put your life in the hands of a computer'
+          this.props.subtitle
         )
       );
     }
@@ -122,7 +123,13 @@ var OptionsContainer = function (_React$Component4) {
   _createClass(OptionsContainer, [{
     key: 'render',
     value: function render() {
-      return React.createElement(Option, null);
+      return React.createElement(
+        'div',
+        null,
+        this.props.options.map(function (option) {
+          return React.createElement(Option, { key: option, optionText: option });
+        })
+      );
     }
   }]);
 
@@ -145,9 +152,9 @@ var Option = function (_React$Component5) {
         'div',
         null,
         React.createElement(
-          'p',
+          'h5',
           null,
-          'option component here'
+          this.props.optionText
         )
       );
     }

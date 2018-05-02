@@ -1,11 +1,13 @@
 class IndecisionContainer extends React.Component {
   render () {
+    const title = 'indecision'
+    const subtitle = 'strive for a katastematic state'
+    const options = ['thing one', 'thing two', 'thing three']
     return (
       <div>
-        <Header title='test title' />
-        <Header title='other title' />
+        <Header title={title} subtitle={subtitle}/>
         <Action />
-        <OptionsContainer />
+        <OptionsContainer options={options} />
         <AddOption />
       </div>
     )
@@ -29,11 +31,10 @@ class Header extends React.Component {
      * - ...as we can see, our custom attributes are available to us
      * - in the form of key/value pairs.
      */
-    console.log(this.props)
     return (
       <div>
-        <h5>indecision</h5>
-        <p>put your life in the hands of a computer</p>
+        <h4>{this.props.title}</h4>
+        <p>{this.props.subtitle}</p>
       </div>
     )
   }
@@ -52,7 +53,14 @@ class Action extends React.Component {
 class OptionsContainer extends React.Component {
   render () {
     return (
-      <Option />
+      <div>
+        {
+          this.props.options.map(
+            option =>
+              <Option key={option} optionText={option} />
+          )
+        }
+      </div>
     )
   }
 }
@@ -61,7 +69,7 @@ class Option extends React.Component {
   render () {
     return (
       <div>
-        <p>option component here</p>
+        <h5>{this.props.optionText}</h5>
       </div>
     )
   }
