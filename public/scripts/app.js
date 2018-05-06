@@ -83,7 +83,7 @@ var IndecisionContainer = function (_React$Component) {
     key: 'render',
     value: function render() {
       var title = 'indecision';
-      var subtitle = 'strive for a katastematic state';
+      var subtitle = 'strive for a katastematic state through kinetic pleasures';
       return React.createElement(
         'div',
         null,
@@ -111,163 +111,24 @@ var IndecisionContainer = function (_React$Component) {
   return IndecisionContainer;
 }(React.Component);
 
-var Header = function (_React$Component2) {
-  _inherits(Header, _React$Component2);
-
-  function Header() {
-    _classCallCheck(this, Header);
-
-    return _possibleConstructorReturn(this, (Header.__proto__ || Object.getPrototypeOf(Header)).apply(this, arguments));
-  }
-
-  _createClass(Header, [{
-    key: 'render',
-    value: function render() {
-      /**
-       * `this` works much the same way it does in ES6 `class` statements
-       * - we can define custom attributes in our component instances;
-       * - `this` refers to INSTANCES of our component, not to the class.
-       * - If we define a custom attribute, such as `title` in one or
-       * - more of our instances, we can access it via `props`, such
-       * - that the following would result in logging thusly:
-       *
-       * console.log(this.props)
-       * // {title: "test title"}
-       * // {title: "other title"}
-       *
-       * - ...as we can see, our custom attributes are available to us
-       * - in the form of key/value pairs.
-       */
-      return React.createElement(
-        'div',
-        null,
-        React.createElement(
-          'h4',
-          null,
-          this.props.title
-        ),
-        React.createElement(
-          'p',
-          null,
-          this.props.subtitle
-        )
-      );
-    }
-  }]);
-
-  return Header;
-}(React.Component);
-
-var Action = function (_React$Component3) {
-  _inherits(Action, _React$Component3);
-
-  function Action() {
-    _classCallCheck(this, Action);
-
-    return _possibleConstructorReturn(this, (Action.__proto__ || Object.getPrototypeOf(Action)).apply(this, arguments));
-  }
-
-  _createClass(Action, [{
-    key: 'render',
-    value: function render() {
-      return React.createElement(
-        'div',
-        null,
-        React.createElement(
-          'button',
-          {
-            onClick: this.props.handlePick
-            /**
-             * this component should only be enabled/visible if
-             * - there are options to pick; set up a prop `hasOptions`
-             * - that is set to a boolean
-             */
-            , disabled: !this.props.hasOptions
-          },
-          'what to do'
-        )
-      );
-    }
-  }]);
-
-  return Action;
-}(React.Component);
-
-var OptionsContainer = function (_React$Component4) {
-  _inherits(OptionsContainer, _React$Component4);
-
-  function OptionsContainer() {
-    _classCallCheck(this, OptionsContainer);
-
-    return _possibleConstructorReturn(this, (OptionsContainer.__proto__ || Object.getPrototypeOf(OptionsContainer)).apply(this, arguments));
-  }
-
-  _createClass(OptionsContainer, [{
-    key: 'render',
-    value: function render() {
-      return React.createElement(
-        'div',
-        null,
-        this.props.options.map(function (option) {
-          return React.createElement(Option, { key: option, optionText: option });
-        }),
-        React.createElement(
-          'button',
-          { onClick: this.props.handleDeleteOptions },
-          'remove all'
-        )
-      );
-    }
-  }]);
-
-  return OptionsContainer;
-}(React.Component);
-
-var Option = function (_React$Component5) {
-  _inherits(Option, _React$Component5);
-
-  function Option() {
-    _classCallCheck(this, Option);
-
-    return _possibleConstructorReturn(this, (Option.__proto__ || Object.getPrototypeOf(Option)).apply(this, arguments));
-  }
-
-  _createClass(Option, [{
-    key: 'render',
-    value: function render() {
-      return React.createElement(
-        'div',
-        null,
-        React.createElement(
-          'h5',
-          null,
-          this.props.optionText
-        )
-      );
-    }
-  }]);
-
-  return Option;
-}(React.Component);
-
-var AddOption = function (_React$Component6) {
-  _inherits(AddOption, _React$Component6);
+var AddOption = function (_React$Component2) {
+  _inherits(AddOption, _React$Component2);
 
   function AddOption(props) {
     _classCallCheck(this, AddOption);
 
-    var _this6 = _possibleConstructorReturn(this, (AddOption.__proto__ || Object.getPrototypeOf(AddOption)).call(this, props));
+    var _this2 = _possibleConstructorReturn(this, (AddOption.__proto__ || Object.getPrototypeOf(AddOption)).call(this, props));
 
-    _this6.handleFormSubmit = _this6.handleFormSubmit.bind(_this6);
+    _this2.handleFormSubmit = _this2.handleFormSubmit.bind(_this2);
 
     /**
      * we need state to keep track of outcome of `handleAddOption`,
      * - if there is an error, we must render it to UI
      */
-    _this6.state = {
+    _this2.state = {
       error: null
     };
-    return _this6;
+    return _this2;
   }
   /**
    * unlike in our other components, we want to keep a separate method here
@@ -324,5 +185,64 @@ var AddOption = function (_React$Component6) {
 
   return AddOption;
 }(React.Component);
+
+var Header = function Header(props) {
+  return React.createElement(
+    'div',
+    null,
+    React.createElement(
+      'h4',
+      null,
+      props.title
+    ),
+    React.createElement(
+      'p',
+      null,
+      props.subtitle
+    )
+  );
+};
+
+var Action = function Action(props) {
+  return React.createElement(
+    'div',
+    null,
+    React.createElement(
+      'button',
+      {
+        onClick: props.handlePick,
+        disabled: !props.hasOptions
+      },
+      'what to do'
+    )
+  );
+};
+
+var OptionsContainer = function OptionsContainer(props) {
+  return React.createElement(
+    'div',
+    null,
+    props.options.map(function (option) {
+      return React.createElement(Option, { key: option, optionText: option });
+    }),
+    React.createElement(
+      'button',
+      { onClick: props.handleDeleteOptions },
+      'remove all'
+    )
+  );
+};
+
+var Option = function Option(props) {
+  return React.createElement(
+    'div',
+    null,
+    React.createElement(
+      'h5',
+      null,
+      props.optionText
+    )
+  );
+};
 
 ReactDOM.render(React.createElement(IndecisionContainer, null), document.getElementById('app'));
