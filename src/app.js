@@ -4,9 +4,10 @@ class IndecisionContainer extends React.Component {
 
     this.handleDeleteOptions = this.handleDeleteOptions.bind(this)
     this.handlePick = this.handlePick.bind(this)
+    this.handleAddOption = this.handleAddOption.bind(this)
 
     this.state = {
-      options: ['thing one', 'thing two', 'thing three']
+      options: []
     }
   }
 
@@ -33,6 +34,28 @@ class IndecisionContainer extends React.Component {
     console.log(option)
   }
 
+  /**
+   * this method requires an argument, because it will be updating our
+   * - state, not just reading from it as the two above:
+   */
+  handleAddOption (option) {
+    if (!option) {
+      return 'enter something.'
+    } else if (this.state.options.indexOf(option) > -1) {
+      return 'you\'re already procrastinating this'
+    }
+
+    this.setState(prevState => {
+      /**
+       * we want to use `concat` as opposed to e.g. `push`, because we
+       * - never want to manipulate state or prevState directly
+       */
+      return {
+        options: prevState.options.concat(option)
+      }
+    })
+  }
+
   render () {
     const title = 'indecision'
     const subtitle = 'strive for a katastematic state'
@@ -52,7 +75,9 @@ class IndecisionContainer extends React.Component {
            */
           handleDeleteOptions={this.handleDeleteOptions}
         />
-        <AddOption />
+        <AddOption
+          handleAddOption={this.handleAddOption}
+        />
       </div>
     )
   }
@@ -138,22 +163,48 @@ class Option extends React.Component {
 }
 
 class AddOption extends React.Component {
-  handleAddOption (e) {
+  constructor (props) {
+    super(props)
+
+    this.handleFormSubmit = this.handleFormSubmit.bind(this)
+
+    /**
+     * we need state to keep track of outcome of `handleAddOption`,
+     * - if there is an error, we must render it to UI
+     */
+    this.state = {
+      error: null
+    }
+  }
+  /**
+   * unlike in our other components, we want to keep a separate method here
+   * - and then call our `handleAddOption` that we get from props; this is
+   * - because we still want to add some behavior such as `preventDefault`
+   */
+  handleFormSubmit (e) {
     e.preventDefault()
 
     // `e.target` points to the element where event originated &
     // - `elements` contains all elements alphabetized by name, so
     // - we can access our input w/`option` (& `value` like JS)
     const option = e.target.elements.option.value.trim()
+    /**
+     * we validate form in `handleAddOption` signature; if there is a
+     * - return value, that means an error has occurred, otherwise we
+     * - can add the option to state.
+     */
+    const error = this.props.handleAddOption(option)
 
-    if (option) {
-      console.log(option)
-    }
+    this.setState(() => {
+      return { error }
+    })
+    e.target.elements.option.value = null
   }
   render () {
     return (
       <div>
-        <form onSubmit={this.handleAddOption}>
+        { this.state.error && <p>{this.state.error}</p> }
+        <form onSubmit={this.handleFormSubmit}>
           <input type='text' name='option' />
           <button>add an option</button>
         </form>

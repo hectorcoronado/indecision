@@ -18,9 +18,10 @@ var IndecisionContainer = function (_React$Component) {
 
     _this.handleDeleteOptions = _this.handleDeleteOptions.bind(_this);
     _this.handlePick = _this.handlePick.bind(_this);
+    _this.handleAddOption = _this.handleAddOption.bind(_this);
 
     _this.state = {
-      options: ['thing one', 'thing two', 'thing three']
+      options: []
     };
     return _this;
   }
@@ -53,6 +54,31 @@ var IndecisionContainer = function (_React$Component) {
 
       console.log(option);
     }
+
+    /**
+     * this method requires an argument, because it will be updating our
+     * - state, not just reading from it as the two above:
+     */
+
+  }, {
+    key: 'handleAddOption',
+    value: function handleAddOption(option) {
+      if (!option) {
+        return 'enter something.';
+      } else if (this.state.options.indexOf(option) > -1) {
+        return 'you\'re already procrastinating this';
+      }
+
+      this.setState(function (prevState) {
+        /**
+         * we want to use `concat` as opposed to e.g. `push`, because we
+         * - never want to manipulate state or prevState directly
+         */
+        return {
+          options: prevState.options.concat(option)
+        };
+      });
+    }
   }, {
     key: 'render',
     value: function render() {
@@ -75,7 +101,9 @@ var IndecisionContainer = function (_React$Component) {
            */
           , handleDeleteOptions: this.handleDeleteOptions
         }),
-        React.createElement(AddOption, null)
+        React.createElement(AddOption, {
+          handleAddOption: this.handleAddOption
+        })
       );
     }
   }]);
@@ -225,25 +253,49 @@ var Option = function (_React$Component5) {
 var AddOption = function (_React$Component6) {
   _inherits(AddOption, _React$Component6);
 
-  function AddOption() {
+  function AddOption(props) {
     _classCallCheck(this, AddOption);
 
-    return _possibleConstructorReturn(this, (AddOption.__proto__ || Object.getPrototypeOf(AddOption)).apply(this, arguments));
+    var _this6 = _possibleConstructorReturn(this, (AddOption.__proto__ || Object.getPrototypeOf(AddOption)).call(this, props));
+
+    _this6.handleFormSubmit = _this6.handleFormSubmit.bind(_this6);
+
+    /**
+     * we need state to keep track of outcome of `handleAddOption`,
+     * - if there is an error, we must render it to UI
+     */
+    _this6.state = {
+      error: null
+    };
+    return _this6;
   }
+  /**
+   * unlike in our other components, we want to keep a separate method here
+   * - and then call our `handleAddOption` that we get from props; this is
+   * - because we still want to add some behavior such as `preventDefault`
+   */
+
 
   _createClass(AddOption, [{
-    key: 'handleAddOption',
-    value: function handleAddOption(e) {
+    key: 'handleFormSubmit',
+    value: function handleFormSubmit(e) {
       e.preventDefault();
 
       // `e.target` points to the element where event originated &
       // - `elements` contains all elements alphabetized by name, so
       // - we can access our input w/`option` (& `value` like JS)
       var option = e.target.elements.option.value.trim();
+      /**
+       * we validate form in `handleAddOption` signature; if there is a
+       * - return value, that means an error has occurred, otherwise we
+       * - can add the option to state.
+       */
+      var error = this.props.handleAddOption(option);
 
-      if (option) {
-        console.log(option);
-      }
+      this.setState(function () {
+        return { error: error };
+      });
+      e.target.elements.option.value = null;
     }
   }, {
     key: 'render',
@@ -251,9 +303,14 @@ var AddOption = function (_React$Component6) {
       return React.createElement(
         'div',
         null,
+        this.state.error && React.createElement(
+          'p',
+          null,
+          this.state.error
+        ),
         React.createElement(
           'form',
-          { onSubmit: this.handleAddOption },
+          { onSubmit: this.handleFormSubmit },
           React.createElement('input', { type: 'text', name: 'option' }),
           React.createElement(
             'button',
