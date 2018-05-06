@@ -1,13 +1,57 @@
 class IndecisionContainer extends React.Component {
+  constructor (props) {
+    super(props)
+
+    this.handleDeleteOptions = this.handleDeleteOptions.bind(this)
+    this.handlePick = this.handlePick.bind(this)
+
+    this.state = {
+      options: ['thing one', 'thing two', 'thing three']
+    }
+  }
+
+  /**
+   * since some of our components (Action & Option) must
+   *  - manipulate state, we define methods *here* that are
+   *  - then passed down to components as props, so that they
+   *  - can have an effect on state
+   */
+  handleDeleteOptions () {
+    // no need for prevState, just return empty array as val of `options`
+    this.setState(() => {
+      return {
+        options: []
+      }
+    })
+  }
+
+  handlePick () {
+    const { options } = this.state
+    const randomNum = Math.floor(Math.random() * options.length)
+    const option = options[randomNum]
+
+    console.log(option)
+  }
+
   render () {
     const title = 'indecision'
     const subtitle = 'strive for a katastematic state'
-    const options = ['thing one', 'thing two', 'thing three']
     return (
       <div>
-        <Header title={title} subtitle={subtitle}/>
-        <Action />
-        <OptionsContainer options={options} />
+        <Header title={title} subtitle={subtitle} />
+        <Action
+          hasOptions={this.state.options.length > 0}
+          handlePick={this.handlePick}
+        />
+        <OptionsContainer
+          options={this.state.options}
+          /**
+           * create prop that references method defined above, so that
+           * - we can manipulate state from child component (same process
+           * - as above, in Action component's `handlePick` prop)
+           */
+          handleDeleteOptions={this.handleDeleteOptions}
+        />
         <AddOption />
       </div>
     )
@@ -41,46 +85,33 @@ class Header extends React.Component {
 }
 
 class Action extends React.Component {
-  handlePick () {
-    console.log('click')
-  }
   render () {
     return (
       <div>
         { /** `this` refers to **instance** of Action,
             *   - and we just need to reference (not call)
             *   - our method:
+            *
+            * `hasOptions` is prop that any instance of this
+            *   - button will check to enable/disable self
         */}
-        <button onClick={this.handlePick}>what to do</button>
+        <button
+          onClick={this.props.handlePick}
+          /**
+           * this component should only be enabled/visible if
+           * - there are options to pick; set up a prop `hasOptions`
+           * - that is set to a boolean
+           */
+          disabled={!this.props.hasOptions}
+        >
+          what to do
+        </button>
       </div>
     )
   }
 }
 
 class OptionsContainer extends React.Component {
-  /**
-   * if we don't bind `this` to handleRemoveAll when we
-   * - reference it in JSX, we get an Uncaught TypeError,
-   * - but we can bind it in the constructor method:
-   */
-  constructor (props) {
-    /**
-     * we call `super` w/props to ascertain that nothing breaks,
-     * - and to have access to `this.props`:
-     */
-    super(props)
-
-    /**
-     * and then `this` can be bound to all references made to the method;
-     * - every time `handleRemoveAll` needs to be employed, in the
-     * - component, it will have access to the correct context
-     */
-    this.handleRemoveAll = this.handleRemoveAll.bind(this)
-  }
-
-  handleRemoveAll () {
-    console.log(this.props.options)
-  }
   render () {
     return (
       <div>
@@ -90,7 +121,7 @@ class OptionsContainer extends React.Component {
               <Option key={option} optionText={option} />
           )
         }
-        <button onClick={this.handleRemoveAll}>remove all</button>
+        <button onClick={this.props.handleDeleteOptions}>remove all</button>
       </div>
     )
   }

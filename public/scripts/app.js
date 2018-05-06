@@ -11,24 +11,70 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var IndecisionContainer = function (_React$Component) {
   _inherits(IndecisionContainer, _React$Component);
 
-  function IndecisionContainer() {
+  function IndecisionContainer(props) {
     _classCallCheck(this, IndecisionContainer);
 
-    return _possibleConstructorReturn(this, (IndecisionContainer.__proto__ || Object.getPrototypeOf(IndecisionContainer)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (IndecisionContainer.__proto__ || Object.getPrototypeOf(IndecisionContainer)).call(this, props));
+
+    _this.handleDeleteOptions = _this.handleDeleteOptions.bind(_this);
+    _this.handlePick = _this.handlePick.bind(_this);
+
+    _this.state = {
+      options: ['thing one', 'thing two', 'thing three']
+    };
+    return _this;
   }
 
+  /**
+   * since some of our components (Action & Option) must
+   *  - manipulate state, we define methods *here* that are
+   *  - then passed down to components as props, so that they
+   *  - can have an effect on state
+   */
+
+
   _createClass(IndecisionContainer, [{
+    key: 'handleDeleteOptions',
+    value: function handleDeleteOptions() {
+      // no need for prevState, just return empty array as val of `options`
+      this.setState(function () {
+        return {
+          options: []
+        };
+      });
+    }
+  }, {
+    key: 'handlePick',
+    value: function handlePick() {
+      var options = this.state.options;
+
+      var randomNum = Math.floor(Math.random() * options.length);
+      var option = options[randomNum];
+
+      console.log(option);
+    }
+  }, {
     key: 'render',
     value: function render() {
       var title = 'indecision';
       var subtitle = 'strive for a katastematic state';
-      var options = ['thing one', 'thing two', 'thing three'];
       return React.createElement(
         'div',
         null,
         React.createElement(Header, { title: title, subtitle: subtitle }),
-        React.createElement(Action, null),
-        React.createElement(OptionsContainer, { options: options }),
+        React.createElement(Action, {
+          hasOptions: this.state.options.length > 0,
+          handlePick: this.handlePick
+        }),
+        React.createElement(OptionsContainer, {
+          options: this.state.options
+          /**
+           * create prop that references method defined above, so that
+           * - we can manipulate state from child component (same process
+           * - as above, in Action component's `handlePick` prop)
+           */
+          , handleDeleteOptions: this.handleDeleteOptions
+        }),
         React.createElement(AddOption, null)
       );
     }
@@ -94,11 +140,6 @@ var Action = function (_React$Component3) {
   }
 
   _createClass(Action, [{
-    key: 'handlePick',
-    value: function handlePick() {
-      console.log('click');
-    }
-  }, {
     key: 'render',
     value: function render() {
       return React.createElement(
@@ -106,7 +147,15 @@ var Action = function (_React$Component3) {
         null,
         React.createElement(
           'button',
-          { onClick: this.handlePick },
+          {
+            onClick: this.props.handlePick
+            /**
+             * this component should only be enabled/visible if
+             * - there are options to pick; set up a prop `hasOptions`
+             * - that is set to a boolean
+             */
+            , disabled: !this.props.hasOptions
+          },
           'what to do'
         )
       );
@@ -119,36 +168,13 @@ var Action = function (_React$Component3) {
 var OptionsContainer = function (_React$Component4) {
   _inherits(OptionsContainer, _React$Component4);
 
-  /**
-   * if we don't bind `this` to handleRemoveAll when we
-   * - reference it in JSX, we get an Uncaught TypeError,
-   * - but we can bind it in the constructor method:
-   */
-  function OptionsContainer(props) {
+  function OptionsContainer() {
     _classCallCheck(this, OptionsContainer);
 
-    /**
-     * and then `this` can be bound to all references made to the method;
-     * - every time `handleRemoveAll` needs to be employed, in the
-     * - component, it will have access to the correct context
-     */
-    var _this4 = _possibleConstructorReturn(this, (OptionsContainer.__proto__ || Object.getPrototypeOf(OptionsContainer)).call(this, props));
-    /**
-     * we call `super` w/props to ascertain that nothing breaks,
-     * - and to have access to `this.props`:
-     */
-
-
-    _this4.handleRemoveAll = _this4.handleRemoveAll.bind(_this4);
-    return _this4;
+    return _possibleConstructorReturn(this, (OptionsContainer.__proto__ || Object.getPrototypeOf(OptionsContainer)).apply(this, arguments));
   }
 
   _createClass(OptionsContainer, [{
-    key: 'handleRemoveAll',
-    value: function handleRemoveAll() {
-      console.log(this.props.options);
-    }
-  }, {
     key: 'render',
     value: function render() {
       return React.createElement(
@@ -159,7 +185,7 @@ var OptionsContainer = function (_React$Component4) {
         }),
         React.createElement(
           'button',
-          { onClick: this.handleRemoveAll },
+          { onClick: this.props.handleDeleteOptions },
           'remove all'
         )
       );
