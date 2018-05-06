@@ -119,16 +119,34 @@ var Action = function (_React$Component3) {
 var OptionsContainer = function (_React$Component4) {
   _inherits(OptionsContainer, _React$Component4);
 
-  function OptionsContainer() {
+  /**
+   * if we don't bind `this` to handleRemoveAll when we
+   * - reference it in JSX, we get an Uncaught TypeError,
+   * - but we can bind it in the constructor method:
+   */
+  function OptionsContainer(props) {
     _classCallCheck(this, OptionsContainer);
 
-    return _possibleConstructorReturn(this, (OptionsContainer.__proto__ || Object.getPrototypeOf(OptionsContainer)).apply(this, arguments));
+    /**
+     * and then `this` can be bound to all references made to the method;
+     * - every time `handleRemoveAll` needs to be employed, in the
+     * - component, it will have access to the correct context
+     */
+    var _this4 = _possibleConstructorReturn(this, (OptionsContainer.__proto__ || Object.getPrototypeOf(OptionsContainer)).call(this, props));
+    /**
+     * we call `super` w/props to ascertain that nothing breaks,
+     * - and to have access to `this.props`:
+     */
+
+
+    _this4.handleRemoveAll = _this4.handleRemoveAll.bind(_this4);
+    return _this4;
   }
 
   _createClass(OptionsContainer, [{
     key: 'handleRemoveAll',
     value: function handleRemoveAll() {
-      console.log('remove all');
+      console.log(this.props.options);
     }
   }, {
     key: 'render',

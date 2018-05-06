@@ -58,8 +58,28 @@ class Action extends React.Component {
 }
 
 class OptionsContainer extends React.Component {
+  /**
+   * if we don't bind `this` to handleRemoveAll when we
+   * - reference it in JSX, we get an Uncaught TypeError,
+   * - but we can bind it in the constructor method:
+   */
+  constructor (props) {
+    /**
+     * we call `super` w/props to ascertain that nothing breaks,
+     * - and to have access to `this.props`:
+     */
+    super(props)
+
+    /**
+     * and then `this` can be bound to all references made to the method;
+     * - every time `handleRemoveAll` needs to be employed, in the
+     * - component, it will have access to the correct context
+     */
+    this.handleRemoveAll = this.handleRemoveAll.bind(this)
+  }
+
   handleRemoveAll () {
-    console.log('remove all')
+    console.log(this.props.options)
   }
   render () {
     return (
