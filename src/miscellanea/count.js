@@ -50,7 +50,43 @@ class Counter extends React.Component {
      * state is initialized here in constructor:
      */
     this.state = {
-      count: props.count
+      count: 0
+    }
+  }
+
+  /**
+   * this lifecycle method fires when the component FIRST gets
+   * - mounted to the DOM; we'll use it to retrieve data from
+   * - localStorage if there's a `count` there
+   *
+   * we use a try/catch block to ascertain that there is no invalid
+   * - data in localStorage
+   */
+  componentDidMount () {
+    try {
+      // localStorage saves everything as a string, so we retrieve it...
+      const stringCount = localStorage.getItem('count')
+      // ...and convert it to a number:
+      const count = parseInt(stringCount, 10)
+
+      // only save to localStorage if count is NOT NaN:
+      if (!isNaN(count)) {
+        this.setState(() => ({ count }))
+      }
+    } catch (e) {
+      // no op
+    }
+  }
+
+  /**
+   * this lifecycle method fires after the component updates (after
+   * - e.g. state or props values change); we'll use it to save to
+   * - localStorage if and when user updates count:
+   */
+  componentDidUpdate (prevProps, prevState) {
+    // only save to localStorage if count changed:
+    if (prevState.count !== this.state.count) {
+      localStorage.setItem('count', this.state.count)
     }
   }
 
@@ -103,8 +139,8 @@ class Counter extends React.Component {
   }
 }
 
-Counter.defaultProps = {
-  count: 0
-}
+// Counter.defaultProps = {
+//   count: 0
+// }
 
 ReactDOM.render(<Counter />, document.getElementById('app'))

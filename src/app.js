@@ -8,7 +8,7 @@ class IndecisionContainer extends React.Component {
     this.handleDeleteOption = this.handleDeleteOption.bind(this)
 
     this.state = {
-      options: props.options
+      options: []
     }
   }
 
@@ -129,9 +129,9 @@ class IndecisionContainer extends React.Component {
   }
 }
 
-IndecisionContainer.defaultProps = {
-  options: []
-}
+// IndecisionContainer.defaultProps = {
+//   options: []
+// }
 
 class AddOption extends React.Component {
   constructor (props) {
