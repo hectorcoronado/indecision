@@ -21,7 +21,7 @@ var IndecisionContainer = function (_React$Component) {
     _this.handleAddOption = _this.handleAddOption.bind(_this);
 
     _this.state = {
-      options: []
+      options: props.options
     };
     return _this;
   }
@@ -82,12 +82,11 @@ var IndecisionContainer = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var title = 'indecision';
       var subtitle = 'strive for a katastematic state through kinetic pleasures';
       return React.createElement(
         'div',
         null,
-        React.createElement(Header, { title: title, subtitle: subtitle }),
+        React.createElement(Header, { subtitle: subtitle }),
         React.createElement(Action, {
           hasOptions: this.state.options.length > 0,
           handlePick: this.handlePick
@@ -110,6 +109,10 @@ var IndecisionContainer = function (_React$Component) {
 
   return IndecisionContainer;
 }(React.Component);
+
+IndecisionContainer.defaultProps = {
+  options: []
+};
 
 var AddOption = function (_React$Component2) {
   _inherits(AddOption, _React$Component2);
@@ -195,12 +198,16 @@ var Header = function Header(props) {
       null,
       props.title
     ),
-    React.createElement(
+    props.subtitle && React.createElement(
       'p',
       null,
       props.subtitle
     )
   );
+};
+
+Header.defaultProps = {
+  title: 'indecisive'
 };
 
 var Action = function Action(props) {

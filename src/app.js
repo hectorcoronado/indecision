@@ -7,7 +7,7 @@ class IndecisionContainer extends React.Component {
     this.handleAddOption = this.handleAddOption.bind(this)
 
     this.state = {
-      options: []
+      options: props.options
     }
   }
 
@@ -57,11 +57,10 @@ class IndecisionContainer extends React.Component {
   }
 
   render () {
-    const title = 'indecision'
     const subtitle = 'strive for a katastematic state through kinetic pleasures'
     return (
       <div>
-        <Header title={title} subtitle={subtitle} />
+        <Header subtitle={subtitle} />
         <Action
           hasOptions={this.state.options.length > 0}
           handlePick={this.handlePick}
@@ -81,6 +80,10 @@ class IndecisionContainer extends React.Component {
       </div>
     )
   }
+}
+
+IndecisionContainer.defaultProps = {
+  options: []
 }
 
 class AddOption extends React.Component {
@@ -138,9 +141,13 @@ const Header = props => {
   return (
     <div>
       <h4>{props.title}</h4>
-      <p>{props.subtitle}</p>
+      {props.subtitle && <p>{props.subtitle}</p>}
     </div>
   )
+}
+
+Header.defaultProps = {
+  title: 'indecisive'
 }
 
 const Action = props => {
