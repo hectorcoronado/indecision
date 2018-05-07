@@ -28,14 +28,72 @@ var IndecisionContainer = function (_React$Component) {
   }
 
   /**
-   * since some of our components (Action & Option) must
-   *  - manipulate state, we define methods *here* that are
-   *  - then passed down to components as props, so that they
-   *  - can have an effect on state
+   * this lifecycle method fires when the component FIRST gets
+   * - mounted to the DOM; we'll use it to retrieve data from
+   * - localStorage if there is anything there.
+   *
+   * we use a try/catch block to ascertain that there is no invalid
+   * - data in localStorage
    */
 
 
   _createClass(IndecisionContainer, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      try {
+        var json = localStorage.getItem('options');
+        var options = JSON.parse(json);
+
+        if (options) {
+          this.setState(function () {
+            return { options: options };
+          });
+        }
+      } catch (e) {
+        // do nothing in case of error.
+      }
+    }
+
+    /**
+     * this lifecycle method fires after the component updates (after
+     * - e.g. state or props values change); we'll use it to save to
+     * - localStorage if and when user adds option
+     */
+
+  }, {
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate(prevProps, prevState) {
+      // only save to localStorage if options have changed:
+      if (prevState.options.length !== this.state.options.length) {
+        var json = JSON.stringify(this.state.options);
+        /**
+         * localStorage is just a key/value pair storage available in
+         * - browser; calling `setItem` allows us to save sth to it;
+         * - 1st arg is the key, 2nd arg is the value:
+         */
+        localStorage.setItem('options', json);
+      }
+    }
+
+    /**
+     * this lifecycle method fires immediately prior to a component being
+     * - removed from the DOM
+     */
+
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      console.log('component will unmount');
+    }
+
+    /**
+     * since some of our components (Action & Option) must
+     *  - manipulate state, we define methods *here* that are
+     *  - then passed down to components as props, so that they
+     *  - can have an effect on state
+     */
+
+  }, {
     key: 'handleDeleteOptions',
     value: function handleDeleteOptions() {
       // no need for prevState, just return empty array as val of `options`
@@ -169,7 +227,9 @@ var AddOption = function (_React$Component2) {
         return { error: error };
       });
 
-      e.target.elements.option.value = null;
+      if (!error) {
+        e.target.elements.option.value = null;
+      }
     }
   }, {
     key: 'render',
@@ -239,6 +299,11 @@ var OptionsContainer = function OptionsContainer(props) {
   return React.createElement(
     'div',
     null,
+    props.options.length === 0 && React.createElement(
+      'p',
+      null,
+      'add things. get started.'
+    ),
     props.options.map(function (option) {
       return React.createElement(Option, {
         key: option,

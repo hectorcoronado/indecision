@@ -13,6 +13,53 @@ class IndecisionContainer extends React.Component {
   }
 
   /**
+   * this lifecycle method fires when the component FIRST gets
+   * - mounted to the DOM; we'll use it to retrieve data from
+   * - localStorage if there is anything there.
+   *
+   * we use a try/catch block to ascertain that there is no invalid
+   * - data in localStorage
+   */
+  componentDidMount () {
+    try {
+      const json = localStorage.getItem('options')
+      const options = JSON.parse(json)
+
+      if (options) {
+        this.setState(() => ({ options }))
+      }
+    } catch (e) {
+      // do nothing in case of error.
+    }
+  }
+
+  /**
+   * this lifecycle method fires after the component updates (after
+   * - e.g. state or props values change); we'll use it to save to
+   * - localStorage if and when user adds option
+   */
+  componentDidUpdate (prevProps, prevState) {
+    // only save to localStorage if options have changed:
+    if (prevState.options.length !== this.state.options.length) {
+      const json = JSON.stringify(this.state.options)
+      /**
+       * localStorage is just a key/value pair storage available in
+       * - browser; calling `setItem` allows us to save sth to it;
+       * - 1st arg is the key, 2nd arg is the value:
+       */
+      localStorage.setItem('options', json)
+    }
+  }
+
+  /**
+   * this lifecycle method fires immediately prior to a component being
+   * - removed from the DOM
+   */
+  componentWillUnmount () {
+    console.log('component will unmount')
+  }
+
+  /**
    * since some of our components (Action & Option) must
    *  - manipulate state, we define methods *here* that are
    *  - then passed down to components as props, so that they
@@ -121,7 +168,9 @@ class AddOption extends React.Component {
 
     this.setState(() => ({ error }))
 
-    e.target.elements.option.value = null
+    if (!error) {
+      e.target.elements.option.value = null
+    }
   }
   render () {
     return (
@@ -165,6 +214,7 @@ const Action = props => {
 const OptionsContainer = props => {
   return (
     <div>
+      {props.options.length === 0 && <p>add things. get started.</p>}
       {props.options.map(option => (
         <Option
           key={option}
