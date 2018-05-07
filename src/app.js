@@ -5,6 +5,7 @@ class IndecisionContainer extends React.Component {
     this.handleDeleteOptions = this.handleDeleteOptions.bind(this)
     this.handlePick = this.handlePick.bind(this)
     this.handleAddOption = this.handleAddOption.bind(this)
+    this.handleDeleteOption = this.handleDeleteOption.bind(this)
 
     this.state = {
       options: props.options
@@ -19,19 +20,19 @@ class IndecisionContainer extends React.Component {
    */
   handleDeleteOptions () {
     // no need for prevState, just return empty array as val of `options`
-    this.setState(() => {
-      return {
-        options: []
-      }
-    })
+    this.setState(() => ({ options: [] }))
+  }
+
+  handleDeleteOption (optionToRemove) {
+    this.setState(prevState => ({
+      options: prevState.options.filter(option => optionToRemove !== option)
+    }))
   }
 
   handlePick () {
     const { options } = this.state
     const randomNum = Math.floor(Math.random() * options.length)
     const option = options[randomNum]
-
-    console.log(option)
   }
 
   /**
@@ -45,15 +46,13 @@ class IndecisionContainer extends React.Component {
       return 'you\'re already procrastinating this'
     }
 
-    this.setState(prevState => {
-      /**
-       * we want to use `concat` as opposed to e.g. `push`, because we
-       * - never want to manipulate state or prevState directly
-       */
-      return {
-        options: prevState.options.concat(option)
-      }
-    })
+    /**
+    * we want to use `concat` as opposed to e.g. `push`, because we
+    * - never want to manipulate state or prevState directly
+    */
+    this.setState(prevState => ({
+      options: prevState.options.concat(option)
+    }))
   }
 
   render () {
@@ -73,6 +72,7 @@ class IndecisionContainer extends React.Component {
            * - as above, in Action component's `handlePick` prop)
            */
           handleDeleteOptions={this.handleDeleteOptions}
+          handleDeleteOption={this.handleDeleteOption}
         />
         <AddOption
           handleAddOption={this.handleAddOption}
@@ -119,9 +119,8 @@ class AddOption extends React.Component {
      */
     const error = this.props.handleAddOption(option)
 
-    this.setState(() => {
-      return { error }
-    })
+    this.setState(() => ({ error }))
+
     e.target.elements.option.value = null
   }
   render () {
@@ -166,9 +165,13 @@ const Action = props => {
 const OptionsContainer = props => {
   return (
     <div>
-      {props.options.map(option =>
-        <Option key={option} optionText={option} />
-      )}
+      {props.options.map(option => (
+        <Option
+          key={option}
+          optionText={option}
+          handleDeleteOption={props.handleDeleteOption}
+        />
+      ))}
       <button onClick={props.handleDeleteOptions}>remove all</button>
     </div>
   )
@@ -177,7 +180,14 @@ const OptionsContainer = props => {
 const Option = props => {
   return (
     <div>
-      <h5>{props.optionText}</h5>
+      {props.optionText}
+      <button
+        onClick={() => {
+          props.handleDeleteOption(props.optionText)
+        }}
+      >
+        remove
+      </button>
     </div>
   )
 }

@@ -19,6 +19,7 @@ var IndecisionContainer = function (_React$Component) {
     _this.handleDeleteOptions = _this.handleDeleteOptions.bind(_this);
     _this.handlePick = _this.handlePick.bind(_this);
     _this.handleAddOption = _this.handleAddOption.bind(_this);
+    _this.handleDeleteOption = _this.handleDeleteOption.bind(_this);
 
     _this.state = {
       options: props.options
@@ -39,8 +40,17 @@ var IndecisionContainer = function (_React$Component) {
     value: function handleDeleteOptions() {
       // no need for prevState, just return empty array as val of `options`
       this.setState(function () {
+        return { options: [] };
+      });
+    }
+  }, {
+    key: 'handleDeleteOption',
+    value: function handleDeleteOption(optionToRemove) {
+      this.setState(function (prevState) {
         return {
-          options: []
+          options: prevState.options.filter(function (option) {
+            return optionToRemove !== option;
+          })
         };
       });
     }
@@ -51,8 +61,6 @@ var IndecisionContainer = function (_React$Component) {
 
       var randomNum = Math.floor(Math.random() * options.length);
       var option = options[randomNum];
-
-      console.log(option);
     }
 
     /**
@@ -69,11 +77,11 @@ var IndecisionContainer = function (_React$Component) {
         return 'you\'re already procrastinating this';
       }
 
+      /**
+      * we want to use `concat` as opposed to e.g. `push`, because we
+      * - never want to manipulate state or prevState directly
+      */
       this.setState(function (prevState) {
-        /**
-         * we want to use `concat` as opposed to e.g. `push`, because we
-         * - never want to manipulate state or prevState directly
-         */
         return {
           options: prevState.options.concat(option)
         };
@@ -98,7 +106,8 @@ var IndecisionContainer = function (_React$Component) {
            * - we can manipulate state from child component (same process
            * - as above, in Action component's `handlePick` prop)
            */
-          , handleDeleteOptions: this.handleDeleteOptions
+          , handleDeleteOptions: this.handleDeleteOptions,
+          handleDeleteOption: this.handleDeleteOption
         }),
         React.createElement(AddOption, {
           handleAddOption: this.handleAddOption
@@ -159,6 +168,7 @@ var AddOption = function (_React$Component2) {
       this.setState(function () {
         return { error: error };
       });
+
       e.target.elements.option.value = null;
     }
   }, {
@@ -230,7 +240,11 @@ var OptionsContainer = function OptionsContainer(props) {
     'div',
     null,
     props.options.map(function (option) {
-      return React.createElement(Option, { key: option, optionText: option });
+      return React.createElement(Option, {
+        key: option,
+        optionText: option,
+        handleDeleteOption: props.handleDeleteOption
+      });
     }),
     React.createElement(
       'button',
@@ -244,10 +258,15 @@ var Option = function Option(props) {
   return React.createElement(
     'div',
     null,
+    props.optionText,
     React.createElement(
-      'h5',
-      null,
-      props.optionText
+      'button',
+      {
+        onClick: function onClick() {
+          props.handleDeleteOption(props.optionText);
+        }
+      },
+      'remove'
     )
   );
 };
