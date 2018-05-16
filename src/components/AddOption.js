@@ -21,7 +21,6 @@ export default class AddOption extends Component {
    */
   handleFormSubmit (e) {
     e.preventDefault()
-
     // `e.target` points to the element where event originated &
     // - `elements` contains all elements alphabetized by name, so
     // - we can access our input w/`option` (& `value` like JS)
@@ -36,7 +35,7 @@ export default class AddOption extends Component {
     this.setState(() => ({ error }))
 
     if (!error) {
-      e.target.elements.option.value = null
+      e.target.elements.option.value = ''
     }
   }
   render () {

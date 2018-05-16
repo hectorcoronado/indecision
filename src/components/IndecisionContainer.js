@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import Action from './Action'
 import AddOption from './AddOption'
 import Header from './Header'
-import OptionsContainer from './Option'
+import OptionsContainer from './OptionsContainer'
 
 class IndecisionContainer extends Component {
   constructor (props) {
