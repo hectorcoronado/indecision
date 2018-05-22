@@ -6,18 +6,70 @@ import Header from './Header'
 import OptionsContainer from './OptionsContainer'
 
 class IndecisionContainer extends Component {
-  constructor (props) {
-    super(props)
+  /**
+    * since we have `transform-class-properties` plugin for babel installed, we can define
+    * - properties directly to our classes, as opposed to just methods.
+    *
+    * this obviates need for `constructor` lifecycle method, as we don't need to bind event
+    * - handlers' `this` context, and we may instantiate `state` as an object literal
+    */
 
-    this.handleDeleteOptions = this.handleDeleteOptions.bind(this)
-    this.handlePick = this.handlePick.bind(this)
-    this.handleAddOption = this.handleAddOption.bind(this)
-    this.handleDeleteOption = this.handleDeleteOption.bind(this)
-
-    this.state = {
-      options: []
-    }
+  // default state defined as class property b/c of `transform-class-properties`
+  state = {
+    options: []
   }
+
+  /**
+    * event handlers defined as class property b/c of `transform-class-properties`;
+    * - must be arrow func, & `this` need not be bound
+    */
+
+  /**
+   * since some of our components (Action & Option) must
+   *  - manipulate state, we define methods *here* that are
+   *  - then passed down to components as props, so that they
+   *  - can have an effect on state
+   */
+
+  /**
+  * this method requires an argument, because it will be updating our
+  * - state, not just reading from it:
+  */
+  handleAddOption = option => {
+    if (!option) {
+      return 'enter something.'
+    } else if (this.state.options.indexOf(option) > -1) {
+      return 'you\'re already procrastinating this'
+    }
+
+    /**
+    * we want to use `concat` as opposed to e.g. `push`, because we
+    * - never manipulate state or prevState directly
+    */
+    this.setState(prevState => ({
+      options: prevState.options.concat(option)
+    }))
+  }
+
+  handleDeleteOption = optionToRemove => {
+    this.setState(prevState => ({
+      options: prevState.options.filter(option => optionToRemove !== option)
+    }))
+  }
+
+
+  handleDeleteAllOptions = () => {
+    // no need for prevState, just return empty array as val of `options`
+    this.setState(() => ({ options: [] }))
+  }
+
+  handlePick = () => {
+    const { options } = this.state
+    const randomNum = Math.floor(Math.random() * options.length)
+    const option = options[randomNum]
+    console.log(option)
+  }
+
 
   /**
    * this lifecycle method fires when the component FIRST gets
@@ -66,49 +118,6 @@ class IndecisionContainer extends Component {
     console.log('component will unmount')
   }
 
-  /**
-   * since some of our components (Action & Option) must
-   *  - manipulate state, we define methods *here* that are
-   *  - then passed down to components as props, so that they
-   *  - can have an effect on state
-   */
-  handleDeleteOptions () {
-    // no need for prevState, just return empty array as val of `options`
-    this.setState(() => ({ options: [] }))
-  }
-
-  handleDeleteOption (optionToRemove) {
-    this.setState(prevState => ({
-      options: prevState.options.filter(option => optionToRemove !== option)
-    }))
-  }
-
-  handlePick () {
-    const { options } = this.state
-    const randomNum = Math.floor(Math.random() * options.length)
-    const option = options[randomNum]
-  }
-
-  /**
-   * this method requires an argument, because it will be updating our
-   * - state, not just reading from it as the two above:
-   */
-  handleAddOption (option) {
-    if (!option) {
-      return 'enter something.'
-    } else if (this.state.options.indexOf(option) > -1) {
-      return 'you\'re already procrastinating this'
-    }
-
-    /**
-    * we want to use `concat` as opposed to e.g. `push`, because we
-    * - never want to manipulate state or prevState directly
-    */
-    this.setState(prevState => ({
-      options: prevState.options.concat(option)
-    }))
-  }
-
   render () {
     const subtitle = 'strive for a katastematic state through kinetic pleasures'
     return (
@@ -125,7 +134,7 @@ class IndecisionContainer extends Component {
            * - we can manipulate state from child component (same process
            * - as above, in Action components handlePick prop)
            */
-          handleDeleteOptions={this.handleDeleteOptions}
+          handleDeleteAllOptions={this.handleDeleteAllOptions}
           handleDeleteOption={this.handleDeleteOption}
         />
         <AddOption

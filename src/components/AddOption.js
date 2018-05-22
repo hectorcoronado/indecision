@@ -1,25 +1,24 @@
 import React, { Component } from 'react'
 
 export default class AddOption extends Component {
-  constructor (props) {
-    super(props)
-
-    this.handleFormSubmit = this.handleFormSubmit.bind(this)
-
-    /**
-     * we need state to keep track of outcome of `handleAddOption`,
-     * - if there is an error, we must render it to UI
-     */
-    this.state = {
-      error: null
-    }
-  }
   /**
-   * unlike in our other components, we want to keep a separate method here
-   * - and then call our `handleAddOption` that we get from props; this is
-   * - because we still want to add some behavior such as `preventDefault`
-   */
-  handleFormSubmit (e) {
+    * since we have `transform-class-properties` plugin for babel installed, we can define
+    * - properties directly to our classes, as opposed to just methods.
+    *
+    * this obviates need for `constructor` lifecycle method, as we don't need to bind event
+    * - handlers' `this` context, and we may instantiate `state` as an object literal
+    */
+
+  // default state defined as class property b/c of `transform-class-properties`
+  state = {
+    error: null
+  }
+
+  /**
+    * event handler defined as class property b/c of `transform-class-properties`;
+    * - must be arrow func, & `this` need not be bound
+    */
+  handleFormSubmit = e => {
     e.preventDefault()
     // `e.target` points to the element where event originated &
     // - `elements` contains all elements alphabetized by name, so

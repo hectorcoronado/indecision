@@ -13,7 +13,7 @@ const OptionsContainer = props => {
           handleDeleteOption={props.handleDeleteOption}
         />
       ))}
-      <button onClick={props.handleDeleteOptions}>remove all</button>
+      <button onClick={props.handleDeleteAllOptions}>remove all</button>
     </div>
   )
 }
