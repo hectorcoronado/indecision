@@ -4,6 +4,7 @@ import Action from './Action'
 import AddOption from './AddOption'
 import Header from './Header'
 import OptionsContainer from './OptionsContainer'
+import OptionModal from './OptionModal'
 
 class IndecisionContainer extends Component {
   /**
@@ -14,9 +15,15 @@ class IndecisionContainer extends Component {
     * - handlers' `this` context, and we may instantiate `state` as an object literal
     */
 
-  // default state defined as class property b/c of `transform-class-properties`
+  /**
+    * default state defined as class property b/c of `transform-class-properties`
+    *
+    * selectedOption is prop passed down to OptionModal component to keep track of whether
+    * - the modal is open or closed
+    */
   state = {
-    options: []
+    options: [],
+    selectedOption: undefined
   }
 
   /**
@@ -25,7 +32,7 @@ class IndecisionContainer extends Component {
     */
 
   /**
-   * since some of our components (Action & Option) must
+   * since some of our components (Action, Option, OptionModal) must
    *  - manipulate state, we define methods *here* that are
    *  - then passed down to components as props, so that they
    *  - can have an effect on state
@@ -51,6 +58,12 @@ class IndecisionContainer extends Component {
     }))
   }
 
+  handleClearModal = () => {
+    this.setState(() => ({
+      selectedOption: undefined
+    }))
+  }
+
   handleDeleteOption = optionToRemove => {
     this.setState(prevState => ({
       options: prevState.options.filter(option => optionToRemove !== option)
@@ -67,7 +80,10 @@ class IndecisionContainer extends Component {
     const { options } = this.state
     const randomNum = Math.floor(Math.random() * options.length)
     const option = options[randomNum]
-    console.log(option)
+
+    this.setState(() => ({
+      selectedOption: option
+    }))
   }
 
 
@@ -139,6 +155,10 @@ class IndecisionContainer extends Component {
         />
         <AddOption
           handleAddOption={this.handleAddOption}
+        />
+        <OptionModal
+          selectedOption={this.state.selectedOption}
+          handleClearModal={this.handleClearModal}
         />
       </div>
     )
