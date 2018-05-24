@@ -14,12 +14,13 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/
       },
-      // css
+      // scss
       {
-        test: /\.css$/,
+        test: /\.scss$/,
         use: [
           'style-loader',
-          'css-loader'
+          'css-loader',
+          'sass-loader'
         ]
       }
     ]
