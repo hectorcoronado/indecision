@@ -8,10 +8,19 @@ module.exports = {
   },
   module: {
     rules: [
+      // js
       {
         loader: 'babel-loader',
         test: /\.js$/,
         exclude: /node_modules/
+      },
+      // css
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          'css-loader'
+        ]
       }
     ]
   },
