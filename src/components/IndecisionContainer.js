@@ -135,7 +135,7 @@ class IndecisionContainer extends Component {
   }
 
   render () {
-    const subtitle = 'strive for a katastematic state through kinetic pleasures'
+    const subtitle = 'strive for katastematic state through kinetic pleasures'
     return (
       <div>
         <Header subtitle={subtitle} />
