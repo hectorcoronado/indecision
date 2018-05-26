@@ -14,9 +14,9 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/
       },
-      // scss
+      // s/css: the '?' catches both types of files (needed for normalize.css):
       {
-        test: /\.scss$/,
+        test: /\.?css$/,
         use: [
           'style-loader',
           'css-loader',
