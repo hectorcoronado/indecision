@@ -139,23 +139,27 @@ class IndecisionContainer extends Component {
     return (
       <div>
         <Header subtitle={subtitle} />
-        <Action
-          hasOptions={this.state.options.length > 0}
-          handlePick={this.handlePick}
-        />
-        <OptionsContainer
-          options={this.state.options}
-          /**
-           * create prop that references method defined above, so that
-           * - we can manipulate state from child component (same process
-           * - as above, in Action components handlePick prop)
-           */
-          handleDeleteAllOptions={this.handleDeleteAllOptions}
-          handleDeleteOption={this.handleDeleteOption}
-        />
-        <AddOption
-          handleAddOption={this.handleAddOption}
-        />
+        <div className='container'>
+          <Action
+            hasOptions={this.state.options.length > 0}
+            handlePick={this.handlePick}
+          />
+          <div className='widget'>
+            <OptionsContainer
+              options={this.state.options}
+              /**
+              * create prop that references method defined above, so that
+              * - we can manipulate state from child component (same process
+                * - as above, in Action components handlePick prop)
+                */
+                handleDeleteAllOptions={this.handleDeleteAllOptions}
+                handleDeleteOption={this.handleDeleteOption}
+              />
+              <AddOption
+                handleAddOption={this.handleAddOption}
+              />
+          </div>
+        </div>
         <OptionModal
           selectedOption={this.state.selectedOption}
           handleClearModal={this.handleClearModal}

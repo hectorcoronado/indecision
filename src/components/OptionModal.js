@@ -9,13 +9,16 @@ const OptionModal = (props) => (
     * - clicking outside of modal
     */
   <Modal
+    className='modal'
+    closeTimeoutMS={200}
     contentLabel='selected option'
     isOpen={!!props.selectedOption}
     onRequestClose={props.handleClearModal}
   >
-    <h4>selected option</h4>
-    {props.selectedOption && <p>{props.selectedOption}</p>}
+    <h3 className='modal__title'>selected option</h3>
+    {props.selectedOption && <p className='modal__body'>{props.selectedOption}</p>}
     <button
+      className='button'
       onClick={props.handleClearModal}
     >
       okay
